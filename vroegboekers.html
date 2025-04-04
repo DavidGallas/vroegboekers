@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vroegboeking Suro di Belanda 2025</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    body {
+      background-color: #007BFF; /* blauwe achtergrond */
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+    }
+    .container {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 1rem;
+      max-width: 600px;
+      margin: auto;
+    }
+    label, p {
+      font-size: 1.2rem;
+    }
+    input[type=checkbox] {
+      transform: scale(1.5);
+      margin-right: 1rem;
+    }
+    #qrcode {
+      margin-top: 2rem;
+    }
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      font-size: 1rem;
+      color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Vroegboeking - Suro di Belanda 2025</h1>
+    <form id="bookingForm">
+      <label><input type="checkbox" value="85" name="event"> Theaterprogramma 11 juli - €85 (i.p.v. €100)</label><br><br>
+      <label><input type="checkbox" value="10" name="event"> Kerisdag toegang (Keraton Surakarta) - €10</label><br><br>
+      <label><input type="checkbox" value="12.5" name="event"> Lezingen over cultuur & traditie - 10 juli - €12,50</label><br><br>
+    </form>
+
+    <p><strong>Totaal: €<span id="total">0.00</span></strong></p>
+
+    <div id="qrcode"></div>
+  </div>
+
+  <footer>&copy; David Gallas</footer>
+
+  <script>
+    const form = document.getElementById('bookingForm');
+    const totalDisplay = document.getElementById('total');
+    const qrcodeContainer = document.getElementById('qrcode');
+
+    function updateTotal() {
+      let total = 0;
+      const checkboxes = form.querySelectorAll('input[name="event"]:checked');
+      checkboxes.forEach(cb => total += parseFloat(cb.value));
+      totalDisplay.textContent = total.toFixed(2);
+
+      // QR-code aanmaken
+      const iban = 'NL87BUNQ2128924332';
+      const name = 'Stichting Behoud N.I.C.E';
+      const description = 'Suro di Belanda 2025';
+      const amount = total.toFixed(2);
+
+      const paymentUrl = `https://bunq.me/${encodeURIComponent(name)}/${amount}`;
+
+      // Clear existing QR
+      qrcodeContainer.innerHTML = '';
+      if (amount > 0) {
+        QRCode.toCanvas(document.createElement('canvas'), paymentUrl, function (error, canvas) {
+          if (!error) {
+            qrcodeContainer.appendChild(canvas);
+          }
+        });
+      }
+    }
+
+    form.addEventListener('change', updateTotal);
+  </script>
+</body>
+</html>
